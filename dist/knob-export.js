@@ -1,4 +1,4 @@
-let Knob = function (input, ui) {
+export let Knob = function (input, ui) {
   let container = document.createElement('div');
   container.setAttribute('tabindex', 0);
   input.parentNode.replaceChild(container, input);
@@ -161,7 +161,11 @@ Knob.prototype = {
     settings.range = settings.max - settings.min;
     let data = input.dataset;
     for (let i in data) {
-      if (data.hasOwnProperty(i) && i !== 'labels') {
+      // FAILS DUE TO  rule no-prototype-builtins prevents calling Object.prototype methods directly from an object
+      // if (data.hasOwnProperty(i) && i !== 'labels') {
+
+      // WORKS
+      if (data.getOwnPropertyDescriptor(i) && i !== 'labels') {
         let value = +data[i];
         settings[i] = isNaN(value) ? data[i] : value;
       }
@@ -170,7 +174,7 @@ Knob.prototype = {
   },
 };
 
-let Ui = function () {};
+export let Ui = function () {};
 
 Ui.prototype = {
   init: function (parentEl, options) {
@@ -191,7 +195,8 @@ Ui.prototype = {
 
   merge: function (dest, src) {
     for (let i in src) {
-      if (src.hasOwnProperty(i)) {
+      // if (src.hasOwnProperty(i)) {
+      if (src.getOwnPropertyDescriptor(i)) {
         dest[i] = src[i];
       }
     }
